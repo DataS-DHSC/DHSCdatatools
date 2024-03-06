@@ -1,5 +1,16 @@
+---
+output: github_document
+---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  out.width = "100%"
+)
+```
 
 # DHSCdatatools
 
@@ -24,7 +35,7 @@ Teams space.
 #### IMPORTANT
 
 Never commit your *.Renviron* to git or upload to GitHub. To ensure git
-ignores the file add it to the project’s .gitignore using the following
+ignores the file add it to the project's .gitignore using the following
 command (you may need to install the `usethis` package first):
 `usethis::use_git_ignore(".Renviron")`.
 

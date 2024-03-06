@@ -1,0 +1,21 @@
+Package: DHSCdatatools
+Title: Collection of tools for working with the DHSC analytical cloud (DAC)
+Version: 0.0.0.9000
+Authors@R: 
+    person("", "Data Science Hub", , "datascience@dhsc.gov.uk", role = c("aut", "cre"))
+Description: This package will be a place to collect various tools that can
+  be used with the DHSC analytical cloud (DAC) platform.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.1
+Suggests: 
+    spelling
+Language: en-GB
+Imports: 
+    AzureAuth (>= 1.3.3),
+    AzureKeyVault (>= 1.0.5),
+    curl (>= 5.2.0),
+    DBI (>= 1.2.0),
+    httr (>= 1.4.7),
+    odbc (>= 1.4.2)
