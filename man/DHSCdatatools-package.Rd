@@ -6,7 +6,15 @@
 \alias{DHSCdatatools-package}
 \title{DHSCdatatools: Collection of tools for working with the DHSC analytical cloud (DAC)}
 \description{
-This package will be a place to collect various tools that can be used with the DHSC analytical cloud (DAC) platform.
+This package will be a place to collect various tools that can be used with the DHSC analytical cloud (DAC) platform. Currently, it includes tools for connecting to the DAC SQL endpoint and running sparklyr.
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/DataS-DHSC/DHSCdatatools}
+  \item Report bugs at \url{https://github.com/DataS-DHSC/DHSCdatatools/issues}
+}
+
 }
 \author{
 \strong{Maintainer}:  Data Science Hub \email{datascience@dhsc.gov.uk}

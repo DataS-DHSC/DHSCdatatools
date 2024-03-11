@@ -4,24 +4,32 @@
 \alias{dac_connect}
 \title{Connect to the DHSC analytical cloud data store via ODBC driver}
 \usage{
-dac_connect(use_cache = TRUE, connections_pane = FALSE)
+dac_connect(
+  env = c("prod", "qa", "test", "dev"),
+  use_cache = TRUE,
+  connections_pane = FALSE
+)
 }
 \arguments{
-\item{use_cache}{Should any existing cached tokens be used for
+\item{env}{development environment to use. One of "prod" (default), "qa",
+"test", or "dev".}
+
+\item{use_cache}{should any existing cached tokens be used for
 authentication.}
 
-\item{connections_pane}{Whether to add the connection to RStudio's
+\item{connections_pane}{whether to add the connection to RStudio's
 interactive connection pane (adds additional loading time).}
 }
 \value{
 a \code{DBIConnection} object equivalent to that returned by
-\code{DBI::dbConnect}
+\code{\link[DBI]{dbConnect}}
 }
 \description{
 Connects to the Databricks SQL endpoint on the DHSC analytical
 cloud (DAC). Connections are authenticated using Azure Entra ID.
 }
 \details{
-Please ensure that you have the correct .Renviron variables
-set.IMPORTANT - NEVER COMMIT YOUR .Renviron FILE
+This function uses the "DAC_TENANT" and "KEY_VAULT_NAME"
+environment variables set in the .Renviron file to access the DAC.
+\strong{Import: Never commit your .Renviron file to git or GitHub}
 }

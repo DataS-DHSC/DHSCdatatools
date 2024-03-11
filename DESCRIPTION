@@ -4,8 +4,11 @@ Version: 0.0.0.9000
 Authors@R: 
     person("", "Data Science Hub", , "datascience@dhsc.gov.uk", role = c("aut", "cre"))
 Description: This package will be a place to collect various tools that can
-  be used with the DHSC analytical cloud (DAC) platform.
+  be used with the DHSC analytical cloud (DAC) platform. Currently, it includes
+  tools for connecting to the DAC SQL endpoint and running sparklyr.
 License: MIT + file LICENSE
+URL: https://github.com/DataS-DHSC/DHSCdatatools
+BugReports: https://github.com/DataS-DHSC/DHSCdatatools/issues
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.1
@@ -18,4 +21,9 @@ Imports:
     curl (>= 5.2.0),
     DBI (>= 1.2.0),
     httr (>= 1.4.7),
-    odbc (>= 1.4.2)
+    keyring (>= 1.3.2),
+    odbc (>= 1.4.2),
+    pysparklyr (>= 0.1.3),
+    reticulate (>= 1.35.0),
+    sparklyr (>= 1.8.4),
+    yaml (>= 2.3.8)
