@@ -4,16 +4,25 @@
 \alias{key_vault}
 \title{Get DAC Azure Key Vault client}
 \usage{
-key_vault(...)
+key_vault(.env = c("prod", "qa", "test", "dev"), ...)
 }
 \arguments{
-\item{...}{Further arguments passed to \code{AzureKeyVault::key_vault}}
+\item{.env}{development environment to use. One of "prod" (default), "qa",
+"test", or "dev". This value is ignored if \code{url} argument is specified
+for the Key Vault.}
+
+\item{...}{further arguments passed to \code{\link[AzureKeyVault]{key_vault}}}
 }
 \value{
 Key Vault client
 }
 \description{
 Note that retrieving client and any secrets will only work
-it the correct proxy is set - see \code{DHSCdatatools::get_proxy_config}
-for getting the correct proxy configuration.
+it the correct proxy is set - see \code{\link{set_proxy_config}}
+for setting the correct proxy configuration.
+}
+\details{
+By default this function uses the "DAC_TENANT" and "KEY_VAULT_NAME"
+environment variables set in the .Renviron file to access the Key Vault.
+\strong{Import: Never commit your .Renviron file to git or GitHub}
 }
