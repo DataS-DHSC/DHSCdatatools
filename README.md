@@ -17,11 +17,42 @@ librarian::stock(DataS-DHSC/DHSCdatatools)
 
 ### Requirements
 
-Once installed you will also need to update the *.Renviron* file in the
-root folder of your RStudio project with the relevant `DAC_TENANT` and
-`KEY_VAULT_NAME` keys. A .Renviron file with the default settings can be
-found in the *R files* folder of the *DAC* channel on the *Data Science*
-Teams space.
+Once installed you will also need to create/update the *.Renviron* file
+in the root folder of your RStudio project to add the `DAC_TENANT` and
+`KEY_VAULT_NAME` keys to your R environment. To open this file for
+editing run then following command in the console from within your
+project (you may need to install the `usethis` package first):
+
+``` r
+usethis::edit_r_environ("project")
+```
+
+This will open your projects *.Renviron* file in your source pane. Next
+navigate to the *DAC* channel on the *Data Science* Teams space and copy
+the text from the *DAC connect: .Renviron settings* post into your
+*.Renviron* file. Save and close the *.Renviron* file then run the
+following command to reload it in the current session (*.Renviron* files
+are automatically reloaded when a project is opened):
+
+``` r
+readRenviron(".Renviron")
+```
+
+#### IMPORTANT
+
+Never commit your *.Renviron* to git or upload to GitHub. To ensure git
+ignores the file add it to the project’s .gitignore using the following
+command from the console (you may need to install the `usethis` package
+first):
+
+``` r
+usethis::use_git_ignore(".Renviron")
+```
+
+If you do accidentally commit your *.Renviron* file (or any other
+sensitive data) please get in touch with the [Data Science
+Hub](mailto:datascience@dhsc.gov.uk) to discuss how best to mitigate the
+breach.
 
 #### Connecting to the SQL endpoint
 
@@ -33,7 +64,8 @@ Spark ODBC drivers via the IT service portal.
 As sparklyr uses [reticulate](https://rstudio.github.io/reticulate/) to
 call a Python Conda environment, you will need to install Miniforge3 via
 the IT service portal. The path to the base environment Python install
-is then set in the `RETICULATE_PYTHON` key of the *.Renviron* file.
+is then set in the `RETICULATE_PYTHON` key of the *.Renviron* file (see
+above).
 
 To create a sparklyr connection you will need to generate a personal
 access token to the particular Databricks workspace you are using
@@ -41,18 +73,6 @@ access token to the particular Databricks workspace you are using
 Databricks on DAC and then generate a token using the guidance
 [here](https://learn.microsoft.com/en-us/azure/databricks/dev-tools/auth/pat#--azure-databricks-personal-access-tokens-for-workspace-users).
 This token is then uploaded by running `DHSCdatatools::set_token()`.
-
-#### IMPORTANT
-
-Never commit your *.Renviron* to git or upload to GitHub. To ensure git
-ignores the file add it to the project’s .gitignore using the following
-command (you may need to install the `usethis` package first):
-`usethis::use_git_ignore(".Renviron")`.
-
-If you do accidentally commit your *.Renviron* file (or any other
-sensitive data) please get in touch with the [Data Science
-Hub](mailto:datascience@dhsc.gov.uk) to discuss how best to mitigate the
-breach.
 
 ## Connecting to the SQL endpoint
 
@@ -63,6 +83,9 @@ the *samples.default.mtcars* table use:
 library(DHSCdatatools)
 library(tidyverse)
 library(dbplyr)
+
+# read in environment variables
+readRenviron(".Renviron")
 
 # Get connection
 con <- dac_connect(connections_pane = TRUE)
@@ -96,6 +119,9 @@ To access the Key Vaults on the DAC the following code can be used:
 ``` r
 library(DHSCdatatools)
 
+# read in environment variables
+readRenviron(".Renviron")
+
 # correctly config RStudio to use proxy
 set_proxy_config()
 
@@ -117,6 +143,7 @@ library(DHSCdatatools)
 library(tidyverse)
 library(sparklyr)
 
+# read in environment variables
 readRenviron(".Renviron")
 
 # note DHSCdatatools function is sparklyr rather than spark
