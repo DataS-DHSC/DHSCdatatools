@@ -54,7 +54,7 @@ dac_connect <- function(env = c("prod", "qa", "test", "dev"),
   )
   
   con <- .dac_connect(
-    token, 
+    token$credentials$access_token, 
     dac_sql_host, 
     dac_sql_path,
     connections_pane,
@@ -152,7 +152,7 @@ dac_cfg_connect <- function(config_yml,
     ThriftTransport = 2,
     AuthMech = 11,
     Auth_Flow = 0,
-    Auth_AccessToken = token$credentials$access_token
+    Auth_AccessToken = token
   )
   
   # call odbc connection contract
