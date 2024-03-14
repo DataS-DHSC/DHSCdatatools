@@ -19,9 +19,12 @@ librarian::stock(DataS-DHSC/DHSCdatatools)
 
 Once installed you will also need to create/update the *.Renviron* file
 in the root folder of your RStudio project to add the `DAC_TENANT` and
-`KEY_VAULT_NAME` keys to your R environment. To open this file for
-editing run then following command in the console from within your
-project (you may need to install the `usethis` package first):
+`KEY_VAULT_NAME` keys to your R environment. These environment variables
+are automatically read by the code and tell it how to find the DAC Key
+Vault which stores all the configuration values used to connect. To open
+the *.Renviron* file for editing run then following command in the
+console from within your project (you may need to install the `usethis`
+package first):
 
 ``` r
 usethis::edit_r_environ("project")
@@ -37,6 +40,15 @@ are automatically reloaded when a project is opened):
 ``` r
 readRenviron(".Renviron")
 ```
+
+#### Note
+
+When the code is first run, a dialogue box may pop up asking to create a
+folder to save your authentication credentials - please click *yes* if
+this occurs.
+
+If you are having issues with your authentication try passing disabling
+the authentication cache with: `dac_connect(use_cache = FALSE)`
 
 #### IMPORTANT
 
@@ -54,27 +66,14 @@ sensitive data) please get in touch with the [Data Science
 Hub](mailto:datascience@dhsc.gov.uk) to discuss how best to mitigate the
 breach.
 
-#### Connecting to the SQL endpoint
+#### Connecting to the DAC data using an SQL endpoint
 
 To connect to the SQL endpoint you will also need to install the Simba
-Spark ODBC drivers via the IT service portal.
+Spark ODBC drivers (32-bit and 64-bit) via the IT service portal. These
+drivers allow the code to interact with the DAC as if it were a
+database.
 
-#### sparklyr (Experimental - requires Python)
-
-As sparklyr uses [reticulate](https://rstudio.github.io/reticulate/) to
-call a Python Conda environment, you will need to install Miniforge3 via
-the IT service portal. The path to the base environment Python install
-is then set in the `RETICULATE_PYTHON` key of the *.Renviron* file (see
-above).
-
-To create a sparklyr connection you will need to generate a personal
-access token to the particular Databricks workspace you are using
-(e.g. “prod”). Please contact the Data Access team to request access to
-Databricks on DAC and then generate a token using the guidance
-[here](https://learn.microsoft.com/en-us/azure/databricks/dev-tools/auth/pat#--azure-databricks-personal-access-tokens-for-workspace-users).
-This token is then uploaded by running `DHSCdatatools::set_token()`.
-
-## Connecting to the SQL endpoint
+## Connecting to the DAC data using an SQL endpoint
 
 To connect to the DAC SQL endpoint and access data from, for example,
 the *samples.default.mtcars* table use:
@@ -84,10 +83,10 @@ library(DHSCdatatools)
 library(tidyverse)
 library(dbplyr)
 
-# read in environment variables
+# re-read in environment variables 
 readRenviron(".Renviron")
 
-# Get connection
+# Get connection to the DAC
 con <- dac_connect(connections_pane = TRUE)
 
 # Table to query - path normally given in the form "<catalog>.<schema>.<table>"
@@ -110,57 +109,6 @@ df <- dbGetQuery(con, "SELECT * FROM samples.default.mtcars")
 
 # close the connection if no longer used
 dbDisconnect(con)
-```
-
-## Accessing the DAC Key Vault
-
-To access the Key Vaults on the DAC the following code can be used:
-
-``` r
-library(DHSCdatatools)
-
-# read in environment variables
-readRenviron(".Renviron")
-
-# correctly config RStudio to use proxy
-set_proxy_config()
-
-# create Key Vault instance and load secrets
-kv <- key_vault()
-secret <- kv$secrets$get("dac-db-host")
-
-# Get value of secret object, will print "<hidden>"
-print(secret$value)
-```
-
-## Running sparklyr (Experimental - requires Python)
-
-[sparklyr](https://spark.posit.co/) allows code to be run directly on
-the DAC. A sparklyr connection can be created using the following:
-
-``` r
-library(DHSCdatatools)
-library(tidyverse)
-library(sparklyr)
-
-# read in environment variables
-readRenviron(".Renviron")
-
-# note DHSCdatatools function is sparklyr rather than spark
-sc <- sparklyr_connect()
-
-# Table to query - path normally given in the form "<catalog>.<schema>.<table>"
-table_path <- in_catalog("samples", "default", "mtcars")
-
-# Query table and collect results from server
-# can use any dplyr verbs supported by sparklyr
-df <- tbl(sc, table_path) |> 
-  group_by(cyl) |> 
-  summarise(mpg = mean(mpg, na.rm = TRUE)) |>
-  arrange(desc(mpg)) |>
-  collect()
-
-spark_disconnect(sc)
 ```
 
 ## Code of Conduct

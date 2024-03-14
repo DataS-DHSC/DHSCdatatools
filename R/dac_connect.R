@@ -31,6 +31,8 @@ dac_connect <- function(env = c("prod", "qa", "test", "dev"),
   dac_url <- sprintf("https://login.microsoftonline.com/%s", dac_tenant)
   old <- httr::set_config(get_proxy_config(dac_url))
   on.exit(httr::set_config(old, override = TRUE))
+  
+  cli::cli_alert_info("Getting Azure token.")
 
   # run this first so can invalidate cache if needed  
   token <- AzureAuth::get_azure_token(
@@ -39,6 +41,8 @@ dac_connect <- function(env = c("prod", "qa", "test", "dev"),
     app = .az_cli_app_id,
     use_cache = use_cache
   )
+  
+  cli::cli_alert_info("Reading from \"{env}\" DAC Key Vault.")
   
   kv <- key_vault(.env = env)
   dac_sql_host <- kv |> read_secret("dac-db-host")
@@ -142,6 +146,10 @@ dac_cfg_connect <- function(config_yml,
                          connections_pane,
                          connection_code) {
   
+  cli::cli_alert_info(
+    "Creating connection, this may take some time if cluster needs starting."
+  )
+  
   con <- DBI::dbConnect(
     odbc::odbc(),
     Driver = "Simba Spark ODBC Driver",
@@ -155,6 +163,13 @@ dac_cfg_connect <- function(config_yml,
     Auth_AccessToken = token
   )
   
+  if (!odbc::dbIsValid(con)) {
+    cli::cli_alert_danger("Failed to connect, please try connecting again.")
+    return(NULL)
+  } else {
+    cli::cli_alert_info("Connection complete.")
+  }
+
   # call odbc connection contract
   # NOTE uses non-exported function
   if (connections_pane) {
