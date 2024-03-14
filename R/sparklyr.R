@@ -24,7 +24,7 @@ sparklyr_connect <- function(env = c("prod", "qa", "test", "dev"),
                              install_ml = FALSE) {
   env <- match.arg(env)
   
-  if (is.null(token)) token <- get_token(env)
+  if (is.null(db_token)) db_token <- get_token(env)
 
   # url used for loading the correct proxy
   dac_url <- sprintf("https://login.microsoftonline.com/%s", get_env("DAC_TENANT"))
@@ -38,7 +38,7 @@ sparklyr_connect <- function(env = c("prod", "qa", "test", "dev"),
   dac_cluster_id <- kv |> read_secret("dac-sparklyr-cluster-id")
   
   sc <- .spark_connect(
-    token, 
+    db_token, 
     dac_db_host, 
     dac_cluster_id,
     dac_db_version,
@@ -80,8 +80,8 @@ sparklyr_cfg_connect <- function(config_yml,
   cfg[["filename"]] <- config_yml
   
   # if no token set get from keyring
-  token <- cfg |> get_cfg(env, "token", default = NULL)
-  if (is.null(token)) token <- get_token(env)
+  db_token <- cfg |> get_cfg(env, "token", default = NULL)
+  if (is.null(db_token)) db_token <- get_token(env)
   
   # url used for loading the correct proxy
   dac_url <- sprintf("https://login.microsoftonline.com/%s", get_env("DAC_TENANT"))
@@ -93,7 +93,7 @@ sparklyr_cfg_connect <- function(config_yml,
   dac_db_host <- kv |> read_secret("dac-db-host")
   
   sc <- .spark_connect(
-    token, 
+    db_token, 
     dac_db_host, 
     cfg |> get_cfg(env, "dac_cluster_id"),
     cfg |> get_cfg(env, "dac_db_version"),

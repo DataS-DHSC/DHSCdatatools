@@ -48,7 +48,7 @@ folder to save your authentication credentials - please click *yes* if
 this occurs.
 
 If you are having issues with your authentication try passing disabling
-the authentication cache with: `dac_connect(use_cache = FALSE)`
+the authentication cache with: `dac_odbc_connect(use_cache = FALSE)`
 
 #### IMPORTANT
 
@@ -87,7 +87,7 @@ library(dbplyr)
 readRenviron(".Renviron")
 
 # Get connection to the DAC
-con <- dac_connect(connections_pane = TRUE)
+con <- dac_odbc_connect(connections_pane = TRUE)
 
 # Table to query - path normally given in the form "<catalog>.<schema>.<table>"
 table_path <- in_catalog("samples", "default", "mtcars")

@@ -20,7 +20,7 @@
 #' \code{\link[DBI]{dbConnect}}
 #' @export
 #'
-dac_connect <- function(env = c("prod", "qa", "test", "dev"), 
+dac_odbc_connect <- function(env = c("prod", "qa", "test", "dev"), 
                         use_cache = TRUE, 
                         connections_pane = FALSE) {
   env <- match.arg(env)
@@ -35,7 +35,7 @@ dac_connect <- function(env = c("prod", "qa", "test", "dev"),
   cli::cli_alert_info("Getting Azure token.")
 
   # run this first so can invalidate cache if needed  
-  token <- AzureAuth::get_azure_token(
+  az_token <- AzureAuth::get_azure_token(
     resource = .databricks_resource_id, 
     tenant = dac_tenant, 
     app = .az_cli_app_id,
@@ -50,15 +50,15 @@ dac_connect <- function(env = c("prod", "qa", "test", "dev"),
 
   connection_code <- sprintf(
     paste(
-      "con <- dac_connect(",
+      "con <- dac_odbc_connect(",
       "env = \"%s\", use_cache = TRUE, connections_pane = TRUE",
       ")"
     ),
     env
   )
   
-  con <- .dac_connect(
-    token$credentials$access_token, 
+  con <- .connect(
+    az_token$credentials$access_token, 
     dac_sql_host, 
     dac_sql_path,
     connections_pane,
@@ -103,8 +103,8 @@ dac_cfg_connect <- function(config_yml,
   cfg[["filename"]] <- config_yml
   
   # if no token set get from keyring
-  token <- cfg |> get_cfg(env, "token", default = NULL)
-  if (is.null(token)) token <- get_token(env)
+  db_token <- cfg |> get_cfg(env, "token", default = NULL)
+  if (is.null(db_token)) db_token <- get_token(env)
   
   dac_tenant <- get_env("DAC_TENANT")
   
@@ -127,8 +127,8 @@ dac_cfg_connect <- function(config_yml,
     env
   )
   
-  con <- .dac_connect(
-    token, 
+  con <- .connect(
+    db_token, 
     dac_sql_host, 
     cfg |> get_cfg(env, "dac_sql_path"),
     connections_pane,
@@ -140,11 +140,11 @@ dac_cfg_connect <- function(config_yml,
 
 
 #'@keywords internal
-.dac_connect <- function(token, 
-                         dac_sql_host, 
-                         dac_sql_path,
-                         connections_pane,
-                         connection_code) {
+.connect <- function(token, 
+                     dac_sql_host, 
+                     dac_sql_path,
+                     connections_pane,
+                     connection_code) {
   
   cli::cli_alert_info(
     "Creating connection, this may take some time if cluster needs starting."
