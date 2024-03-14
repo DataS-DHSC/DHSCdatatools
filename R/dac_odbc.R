@@ -166,9 +166,7 @@ dac_cfg_connect <- function(config_yml,
   if (!odbc::dbIsValid(con)) {
     cli::cli_alert_danger("Failed to connect, please try connecting again.")
     return(NULL)
-  } else {
-    cli::cli_alert_info("Connection complete.")
-  }
+  } 
 
   # call odbc connection contract
   # NOTE uses non-exported function
@@ -183,7 +181,12 @@ dac_cfg_connect <- function(config_yml,
         collapse = "\n"
       )
     )
+  } else {
+    # list objects to make sure cluster is awake
+    del <- odbc::odbcListObjects(con)
   }
+  
+  cli::cli_alert_info("Connection complete.")
   
   return(con)
 }
