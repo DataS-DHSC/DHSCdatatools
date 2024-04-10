@@ -15,6 +15,11 @@ if (!requireNamespace("librarian")) install.packages("librarian")
 librarian::stock(DataS-DHSC/DHSCdatatools)
 ```
 
+To reinstall DHSCdatatools use:
+``` r
+librarian::stock(DataS-DHSC/DHSCdatatools, update_all = TRUE)
+```
+
 ### Requirements
 
 Once installed you will also need to create/update the *.Renviron* file
@@ -82,6 +87,7 @@ the *samples.default.mtcars* table use:
 library(DHSCdatatools)
 library(tidyverse)
 library(dbplyr)
+library(DBI)
 
 # re-read in environment variables 
 readRenviron(".Renviron")
